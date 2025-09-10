@@ -148,9 +148,19 @@ def update_package_manifest(doc: minidom.Document, image_filenames: list[str],
         item.setAttribute('media-type', media_type)
         manifest.appendChild(item)
         
-def get_all_filenames(the_dir, extensions=[]):
-    all_files = [x for x in os.listdir(the_dir)]
-    all_files = [x for x in all_files if x.split(".")[-1] in extensions]
+# def get_all_filenames(the_dir, extensions=[]):
+#     all_files = [x for x in os.listdir(the_dir)]
+#     all_files = [x for x in all_files if x.split(".")[-1] in extensions]
+#     return all_files
+
+def get_all_filenames(the_dir, extensions=None):
+    # if no image folder, return an empty list instead of FileNotFoundError
+    if not os.path.exists(the_dir):
+        return []
+
+    all_files = [x for x in os.listdir(the_dir) if os.path.isfile(os.path.join(the_dir, x))]
+    if extensions:
+        all_files = [x for x in all_files if x.split(".")[-1].lower() in extensions]
     return all_files
 
 def get_packageOPF_XML(md_filenames=[], image_filenames=[], css_filenames=[], description_data=None):
